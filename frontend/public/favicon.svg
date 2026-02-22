@@ -1,0 +1,26 @@
+<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3b5fc0" />
+            <stop offset="100%" stopColor="#1e3a8a" />
+        </linearGradient>
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#1e3a8a" floodOpacity="0.25" />
+        </filter>
+    </defs>
+
+    <rect x="0" y="0" width="60" height="60" rx="12" ry="12"
+        fill="url(#boxGrad)" filter="url(#shadow)" />
+
+    <rect x="4" y="4" width="52" height="24" rx="8" ry="8"
+        fill="white" fillOpacity="0.08" />
+
+    <text
+        x="30" y="43"
+        fill="#ffffff"
+        fontSize="36" fontWeight="900"
+        fontFamily="Georgia, 'Times New Roman', serif"
+        textAnchor="middle"
+        style="letter-spacing: -1px;"
+    >A</text>
+</svg>
