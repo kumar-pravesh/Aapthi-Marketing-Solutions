@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import { Helmet } from 'react-helmet-async';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle, AlertCircle } from 'lucide-react';
 
@@ -13,28 +14,43 @@ const Contact = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus('sending');
+        // EmailJS config from environment (Vite exposes vars as import.meta.env)
+        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+        const emailParams = {
+            from_name: formData.name,
+            from_email: formData.email,
+            phone: formData.phone,
+            message: formData.message,
+        };
 
         try {
-            const response = await fetch('http://localhost:5000/api/contact', {
+            // Send email (if configured) and persist to backend in parallel
+            const emailPromise = (serviceId && templateId && publicKey)
+                ? emailjs.send(serviceId, templateId, emailParams, publicKey)
+                : Promise.resolve(null);
+
+            const backendPromise = fetch('http://localhost:5000/api/contact', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
 
-            if (response.ok) {
+            const [emailResult, backendResult] = await Promise.allSettled([emailPromise, backendPromise]);
+
+            const backendOk = backendResult.status === 'fulfilled' && backendResult.value && backendResult.value.ok;
+            const emailOk = emailResult.status === 'fulfilled' && emailResult.value !== null;
+
+            if (backendOk || emailOk) {
                 setStatus('success');
                 setFormData({ name: '', email: '', phone: '', message: '' });
             } else {
                 setStatus('error');
             }
         } catch (error) {
-            // Simulate success if backend offline
-            setTimeout(() => {
-                setStatus('success');
-                setFormData({ name: '', email: '', phone: '', message: '' });
-            }, 1000);
+            setStatus('error');
         }
     };
 
@@ -144,7 +160,7 @@ const Contact = () => {
                                         onChange={handleChange}
                                         required
                                         className="w-full rounded-md border-gray-300 shadow-sm focus:border-navy-500 focus:ring-navy-500 bg-white p-3 border"
-                                        placeholder="John Doe"
+                                        placeholder="Your Name"
                                     />
                                 </div>
                                 <div>
@@ -155,7 +171,7 @@ const Contact = () => {
                                         value={formData.phone}
                                         onChange={handleChange}
                                         className="w-full rounded-md border-gray-300 shadow-sm focus:border-navy-500 focus:ring-navy-500 bg-white p-3 border"
-                                        placeholder="+91 98765 43210"
+                                        placeholder="mobile number "
                                     />
                                 </div>
                             </div>
@@ -169,7 +185,7 @@ const Contact = () => {
                                     onChange={handleChange}
                                     required
                                     className="w-full rounded-md border-gray-300 shadow-sm focus:border-navy-500 focus:ring-navy-500 bg-white p-3 border"
-                                    placeholder="john@company.com"
+                                    placeholder="Your Email"
                                 />
                             </div>
 
