@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const db = require('../config/db');
+const db = require('../config/db_pg');
 
 // @route   POST /api/admin/login
 // @desc    Authenticate admin & get token
@@ -34,8 +34,8 @@ const login = (req, res) => {
 // @desc    Get all contact inquiries
 const getContacts = async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT * FROM contact_inquiries ORDER BY created_at DESC');
-        res.json(rows);
+        const result = await db.query('SELECT * FROM contact_inquiries ORDER BY created_at DESC');
+        res.json(result.rows);
     } catch (error) {
         console.error('Error fetching contacts:', error);
         res.status(500).json({ message: 'Server Error' });
@@ -48,8 +48,8 @@ const getCareers = async (req, res) => {
     try {
         // Depending on what we want to fetch. We have `careers` table and `resume_uploads` table.
         // Assuming we want to view uploaded resumes here.
-        const [rows] = await db.execute('SELECT * FROM resume_uploads ORDER BY created_at DESC');
-        res.json(rows);
+        const result = await db.query('SELECT * FROM resume_uploads ORDER BY created_at DESC');
+        res.json(result.rows);
     } catch (error) {
         console.error('Error fetching careers:', error);
         res.status(500).json({ message: 'Server Error' });

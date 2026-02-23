@@ -17,13 +17,13 @@ app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', message: 'API is running smoothly.' });
 });
 
-const initDB = require('./models/initDB');
+const initDB_pg = require('./models/initDB_pg');
 const contactRoutes = require('./routes/contactRoutes');
 const careersRoutes = require('./routes/careersRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
-// Initialize database
-initDB();
+// Initialize database (PostgreSQL)
+initDB_pg();
 
 app.use('/api/contact', contactRoutes);
 app.use('/api/careers', careersRoutes);

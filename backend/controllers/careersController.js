@@ -1,10 +1,10 @@
-const db = require('../config/db');
+const db = require('../config/db_pg');
 
 // Get all open career positions
 exports.getCareers = async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT * FROM careers ORDER BY created_at DESC');
-        res.status(200).json(rows);
+        const result = await db.query('SELECT * FROM careers ORDER BY created_at DESC');
+        res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching careers:', error);
         res.status(500).json({ error: 'Failed to fetch careers' });
@@ -25,12 +25,12 @@ exports.uploadResume = async (req, res) => {
         }
 
         // Insert into DB
-        const [result] = await db.execute(
-            'INSERT INTO resume_uploads (name, file_path) VALUES (?, ?)',
+        const result = await db.query(
+            'INSERT INTO resume_uploads (name, file_path) VALUES ($1, $2) RETURNING id',
             [name, filePath]
         );
 
-        res.status(201).json({ message: 'Resume uploaded successfully', id: result.insertId });
+        res.status(201).json({ message: 'Resume uploaded successfully', id: result.rows[0].id });
     } catch (error) {
         console.error('Error uploading resume:', error);
         res.status(500).json({ error: 'Failed to upload resume' });
