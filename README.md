@@ -1,12 +1,18 @@
 # Aapthi Marketing Solutions Pvt Ltd - Enterprise Portal
 
-Welcome to the Aapthi Marketing Solutions project repository! This project consists of a modern, responsive public-facing website built with **React/Vite** and a secure Admin Command Center portal, backed by a robust **Node.js/Express** API and MySQL database.
+Aapthi Marketing Solutions is a modern, high-performance corporate digital platform designed for IT staffing and enterprise solutions. This project demonstrates a robust full-stack architecture using a decoupled React.js frontend and a Node.js/Express backend, integrated with Neon (Serverless Postgres) for scalable data management.
 
 ## 🚀 Project Overview
 
 The project is split into two main directories:
 - **`/frontend`**: The React application (Vite template). It contains both the public website and the secure `/admin/*` routes.
 - **`/backend`**: The Node.js Express server. It handles API requests, database interactions, and JWT authentication for the admin portal.
+Modern Frontend: Built with Vite + React.js and styled using Tailwind CSS v4 for cutting-edge UI performance and design.
+Scalable Backend: RESTful API developed with Express.js and fully migrated to Neon Postgres for a cloud-native database experience.
+Career Portal: Interactive job application flow with resume upload support using Multer.
+Lead Management: Secure contact inquiry system for corporate client acquisition.
+Admin Command Center: Centralized dashboard for staff to manage applications and inquiries with JWT-based authentication.
+Production Ready: Fully configured for distributed deployment on Vercel and Render.
 
 ---
 
