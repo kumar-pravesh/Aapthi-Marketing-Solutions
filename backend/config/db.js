@@ -1,23 +1,29 @@
-const mysql = require('mysql2/promise');
+const { Pool } = require('pg');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-const pool = mysql.createPool({
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
     host: process.env.DB_HOST || '127.0.0.1',
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER || 'root',
+    port: process.env.DB_PORT || 5432,
+    user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'aapthi_marketing',
-    ssl: { rejectUnauthorized: false },
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    ssl: { rejectUnauthorized: false }
 });
 
-
-// Use this file wherever database queries are required:
-// const db = require('../config/db');
-// const [rows] = await db.execute('SELECT * FROM table');
-
-module.exports = pool;
+module.exports = {
+    query: (text, params) => pool.query(text, params),
+    // Wrapper to mimic mysql2 return [rows, fields]
+    execute: async (text, params) => {
+        const res = await pool.query(text, params);
+        // Map rows for compatibility, add rows[0].id as insertId if available
+        const result = {
+            ...res,
+            insertId: res.rows.length > 0 ? res.rows[0].id : null
+        };
+        return [res.rows, result];
+    },
+    pool: pool
+};

@@ -11,8 +11,8 @@ exports.submitInquiry = async (req, res) => {
         }
 
         // Insert into DB
-        const [result] = await db.execute(
-            'INSERT INTO contact_inquiries (name, email, phone, message) VALUES (?, ?, ?, ?)',
+        const [rows, result] = await db.execute(
+            'INSERT INTO contact_inquiries (name, email, phone, message) VALUES ($1, $2, $3, $4) RETURNING id',
             [name, email, phone, message]
         );
 

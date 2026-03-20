@@ -25,8 +25,8 @@ exports.uploadResume = async (req, res) => {
         }
 
         // Insert into DB
-        const [result] = await db.execute(
-            'INSERT INTO resume_uploads (name, file_path) VALUES (?, ?)',
+        const [rows, result] = await db.execute(
+            'INSERT INTO resume_uploads (name, file_path) VALUES ($1, $2) RETURNING id',
             [name, filePath]
         );
 

@@ -13,8 +13,9 @@ const AdminDashboard = () => {
         setIsLoading(true);
         setError('');
         try {
+            const apiBase = import.meta.env.VITE_API_URL || '';
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`http://localhost:5000/api/admin/${type}`, {
+            const response = await fetch(`${apiBase}/api/admin/${type}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -290,7 +291,7 @@ const AdminDashboard = () => {
                                                         <td className="px-6 py-4 text-right">
                                                             {item.file_path ? (
                                                                 <a
-                                                                    href={`http://localhost:5000/${item.file_path}`}
+                                                                    href={`${import.meta.env.VITE_API_URL || ''}/${item.file_path}`}
                                                                     target="_blank"
                                                                     rel="noopener noreferrer"
                                                                     className="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

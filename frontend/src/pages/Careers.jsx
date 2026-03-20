@@ -76,7 +76,8 @@ const Careers = () => {
         formData.append('resume', resume);
 
         try {
-            const response = await fetch('http://localhost:5000/api/careers/upload', {
+            const apiBase = import.meta.env.VITE_API_URL || '';
+            const response = await fetch(`${apiBase}/api/careers/upload`, {
                 method: 'POST',
                 body: formData,
             });

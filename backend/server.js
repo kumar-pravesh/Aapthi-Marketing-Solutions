@@ -8,13 +8,16 @@ dotenv.config();
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || '*',
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Default Route
 app.get('/api/health', (req, res) => {
-    res.status(200).json({ status: 'ok', message: 'API is running smoothly.' });
+    res.status(200).json({ status: 'ok', message: 'API is running smoothly on Neon Postgres.' });
 });
 
 const initDB = require('./models/initDB');
@@ -23,7 +26,9 @@ const careersRoutes = require('./routes/careersRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
 // Initialize database
-initDB();
+if (process.env.NODE_ENV !== 'test') {
+    initDB();
+}
 
 app.use('/api/contact', contactRoutes);
 app.use('/api/careers', careersRoutes);
@@ -32,6 +37,10 @@ app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
